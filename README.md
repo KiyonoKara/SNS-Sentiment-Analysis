@@ -1,6 +1,6 @@
 # SNS-Sentiment-Analysis
 
-Analyze comments and sentences primarily coming from social media and SNS then measure the sentiments.
+Analyze social media / SNS texts then measure potential inflammatory / offensive language..
 
 ## References & Datasets
 
