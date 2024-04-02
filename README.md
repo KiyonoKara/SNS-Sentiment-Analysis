@@ -1,6 +1,6 @@
 # SNS-Sentiment-Analysis
 
-Analyze social media / SNS texts then measure potential inflammatory / offensive language..
+Analyze social media / SNS texts then measure potential inflammatory / offensive language.
 
 ## References & Datasets
 
