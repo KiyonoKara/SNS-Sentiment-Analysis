@@ -5,5 +5,4 @@ Analyze social media / SNS texts then measure potential inflammatory / offensive
 ## References & Datasets
 
 - https://www.kaggle.com/datasets/waalbannyantudre/hate-speech-detection-curated-dataset
-- https://www.kaggle.com/datasets/dv1453/twitter-sentiment-analysis-analytics-vidya
 - https://www.kaggle.com/datasets/surekharamireddy/malignant-comment-classification
