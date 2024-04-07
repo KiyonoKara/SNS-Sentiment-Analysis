@@ -1,6 +1,9 @@
 # Ignore nltk data
 ./nltk_data
 
+# Ignore datasets
+./datasets
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
