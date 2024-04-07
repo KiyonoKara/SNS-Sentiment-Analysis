@@ -27,6 +27,15 @@ def get_prfa(dev_y: list, pred_y: list, verbose=False) -> tuple:
     return precision, recall, f1, accuracy
 
 
+def probs_to_preds(probabilities: list) -> list[int]:
+    """
+    Converts continuous (sigmoid) outputs to discrete binary probabilities
+    :param probabilities: List of probabilities between [0, 1]
+    :return:
+    """
+    return [1 if p[0] > 0.5 else 0 for p in probabilities]
+
+
 def generate_tuples_from_df(df: pd.DataFrame) -> tuple[list[list[str]], list[int]]:
     """
     Generates data from Pandas DataFrame in format:
