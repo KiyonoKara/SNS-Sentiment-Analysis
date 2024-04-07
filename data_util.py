@@ -2,6 +2,29 @@ from collections import Counter
 import nltk
 from nltk import SnowballStemmer
 import pandas as pd
+from sklearn import metrics
+
+
+def get_prfa(dev_y: list, pred_y: list, verbose=False) -> tuple:
+    """
+    Calculate precision, recall, f1, and accuracy for a given set of predictions and labels.
+    Args:
+        dev_y: list of labels
+        pred_y: list of predictions
+        verbose: whether to print the metrics
+    Returns:
+        tuple of precision, recall, f1, and accuracy
+    """
+    precision = metrics.precision_score(dev_y, pred_y)
+    recall = metrics.recall_score(dev_y, pred_y)
+    f1 = metrics.f1_score(dev_y, pred_y)
+    accuracy = metrics.accuracy_score(dev_y, pred_y)
+    if verbose:
+        print(f'Precision: {precision}')
+        print(f'Recall: {recall}')
+        print(f'F1 Score: {f1}')
+        print(f'Accuracy: {accuracy}')
+    return precision, recall, f1, accuracy
 
 
 def generate_tuples_from_df(df: pd.DataFrame) -> tuple[list[list[str]], list[int]]:
