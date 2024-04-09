@@ -90,6 +90,7 @@ def __create_bert_model():
 
 def main():
     load_models()
+    print('\n' * 10)
     print('Type \'nn\' for feedforward neural network model.\n'
           'Type \'lr\' for logistic regression.\n'
           'Type \'bert\' for BERT model.\n\n'
@@ -104,11 +105,12 @@ def main():
             print('Invalid model input!')
             continue
 
-        input_text = input("Enter your input text: ")
+        input_text = input("Enter your input text: ").strip()
         if input_text == QUIT_MESSAGE:
             exit()
         prediction_percentage = round(predict(requested_model, input_text) * 100, 2)
         print(f'Predicted likelihood for {requested_model}: {prediction_percentage}%')
+        print('\n')
 
 
 if __name__ == '__main__':
