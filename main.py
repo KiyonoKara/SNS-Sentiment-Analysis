@@ -28,7 +28,7 @@ def load_models():
     models['nn']: Sequential = keras.models.load_model('./models/sns_multinomial_ff.h5')
 
     # Loading Logistic Regression
-    models['lr']: LogisticRegression = pickle.load(open("./models/sns_multinomial_lr.pkl", "rb"))
+    models['lr']: LogisticRegression = pickle.load(open("./models/sns_multinomial_lr_2.pkl", "rb"))
 
     # Loading BERT
     bm = __create_bert_model()
