@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 from transformers import TFBertModel, BertTokenizer, logging
 
-warnings.simplefilter('ignore')
+warnings.filterwarnings('ignore')
 logging.set_verbosity_error()
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
@@ -32,7 +32,7 @@ def load_models():
 
     # Loading BERT
     bm = __create_bert_model()
-    bm.load_weights('./models/sns_bert.weights.h5')
+    bm.load_weights('./models/sns_bert_2.weights.h5')
     models['bert']: TFBertModel = bm
 
 
@@ -107,7 +107,8 @@ def main():
         input_text = input("Enter your input text: ")
         if input_text == QUIT_MESSAGE:
             exit()
-        print(predict(requested_model, input_text))
+        prediction_percentage = round(predict(requested_model, input_text) * 100, 2)
+        print(f'Predicted likelihood for {requested_model}: {prediction_percentage}%')
 
 
 if __name__ == '__main__':
