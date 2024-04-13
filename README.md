@@ -33,7 +33,7 @@ Regarding the datasets, all texts have a binary label of either `0` or `1`.
 - `0` = not inflammatory / not offensive
 - `1` = inflammatory / offensive
 
-The models make predictions on as a probability in range `[0, 1]`.
+The models make predictions as a probability in range `[0, 1]`—the model won't explicity predict `0` or `1`.
 
 ## Version & Package requirements
 Testing & Working Python Versions:
