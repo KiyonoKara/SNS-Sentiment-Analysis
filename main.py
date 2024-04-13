@@ -4,6 +4,8 @@ from keras.models import Sequential
 import pickle
 import tensorflow as tf
 import warnings
+import keras_tuner as kt
+import json
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 from transformers import TFBertModel, BertTokenizer, logging
@@ -25,15 +27,23 @@ v = CountVectorizer(input='content', stop_words='english', binary=False, vocabul
 
 def load_models():
     # Loading Feedforward Neural Network
-    models['nn']: Sequential = keras.models.load_model('./models/sns_multinomial_ff.h5')
+    models['nn']: Sequential = keras.models.load_model('./models/sns_tuned_nn.h5')
 
     # Loading Logistic Regression
-    models['lr']: LogisticRegression = pickle.load(open("./models/sns_multinomial_lr_2.pkl", "rb"))
+    models['lr']: LogisticRegression = pickle.load(open("./models/sns_best_lr.pkl", "rb"))
 
     # Loading BERT
-    bm = __create_bert_model()
-    bm.load_weights('./models/sns_bert_2.weights.h5')
-    models['bert']: TFBertModel = bm
+    with open('./models/sns_tuned_bert_hp_config.json', 'r') as f:
+        hp_config = json.loads(f.read())
+        f.close()
+    hp = kt.HyperParameters().from_config(hp_config)
+    tuned_bert = __create_tuned_bert_model(hp)
+    tuned_bert.load_weights('./models/sns_tuned_bert.weights.h5')
+    models['bert']: TFBertModel = tuned_bert
+
+    # bm = __create_bert_model()
+    # bm.load_weights('./models/sns_bert_2.weights.h5')
+    # models['bert']: TFBertModel = bm
 
 
 def predict(model: str, text: str) -> float:
@@ -83,6 +93,33 @@ def __create_bert_model():
 
     model = tf.keras.Model(inputs=[input_ids, attention_mask, token_type_ids], outputs=output)
     model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=1e-3), loss='binary_crossentropy',
+                  metrics=['accuracy'])
+
+    return model
+
+
+def __create_tuned_bert_model(hp: kt.HyperParameters):
+    MAX_LENGTH = 128
+    input_ids = tf.keras.layers.Input(shape=(MAX_LENGTH,), dtype=tf.int32, name='input_ids')
+    attention_mask = tf.keras.layers.Input(shape=(MAX_LENGTH,), dtype=tf.int32, name='attention_mask')
+    token_type_ids = tf.keras.layers.Input(shape=(MAX_LENGTH,), dtype=tf.int32, name='token_type_ids')
+
+    bert_output = bert_model(input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
+    sequence_output = bert_output[0]
+    # Take the [CLS] token representation
+    pooled_output = sequence_output[:, 0, :]
+
+    dropout_rate = hp.Float('dropout', min_value=0.1, max_value=0.5, step=0.1)
+    dense_units = hp.Int('dense_units', min_value=64, max_value=256, step=64)
+
+    x = tf.keras.layers.Dropout(dropout_rate)(pooled_output)
+    x = tf.keras.layers.Dense(dense_units, activation='relu')(x)
+    output = tf.keras.layers.Dense(1, activation='sigmoid')(x)
+
+    learning_rate = hp.Choice('learning_rate', values=[1e-5, 1e-4, 1e-3])
+
+    model = tf.keras.Model(inputs=[input_ids, attention_mask, token_type_ids], outputs=output)
+    model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=learning_rate), loss='binary_crossentropy',
                   metrics=['accuracy'])
 
     return model
